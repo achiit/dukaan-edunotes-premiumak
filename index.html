@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="hi" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a1a">
+<title>EduNotes Premium – Developed by Abhishek Kumar Yadav</title>
+
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+<link rel="dns-prefetch" href="https://www.googletagservices.com">
+
+<style>
+*{-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:#0a0a1a;font-family:'Segoe UI',system-ui,sans-serif;overscroll-behavior-y:none;overflow-x:hidden}
+
+#netlify-badge, iframe[title="netlify"], iframe[src*="netlify.com"], a[href*="netlify.com"] {
+    display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+}
+
+#loading-screen{position:fixed;inset:0;background:linear-gradient(135deg,#1a0033,#0a0a1a,#001a33);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:99999}
+#loading-screen .spinner{width:70px;height:70px;border:3px solid rgba(255,215,0,0.15);border-top:3px solid #ffd700;border-right:3px solid #a855f7;border-radius:50%;animation:spin 1s linear infinite;box-shadow:0 0 40px rgba(168,85,247,0.5)}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading-error{display:none;background:rgba(220,38,38,0.2);border:1px solid #dc2626;padding:15px;border-radius:12px;max-width:95%;margin-top:20px;font-size:13px;text-align:center;line-height:1.6;color:#fca5a5}
+
+@keyframes rainbow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(168,85,247,0.4),0 0 40px rgba(255,215,0,0.2)}50%{box-shadow:0 0 40px rgba(168,85,247,0.7),0 0 80px rgba(255,215,0,0.4)}}
+@keyframes shine{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+
+.rainbow-text{background:linear-gradient(90deg,#ffd700,#ff8a00,#ff005e,#a855f7,#00c2ff,#ffd700);background-size:400% 400%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rainbow 6s ease infinite;font-weight:900;letter-spacing:.08em}
+.premium-bg{background:linear-gradient(135deg,#0a0a1a 0%,#1a0033 25%,#0a0a1a 50%,#001a33 75%,#0a0a1a 100%);background-size:400% 400%;animation:bgMove 30s ease infinite;will-change:background-position}
+.glass{background:rgba(30,20,60,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,215,0,0.15);box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);transform:translateZ(0)}
+.glass-dark{background:rgba(15,10,35,0.8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(168,85,247,0.2);box-shadow:0 12px 48px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.08);transform:translateZ(0)}
+.card-premium{background:linear-gradient(135deg,rgba(30,20,60,0.85),rgba(20,10,40,0.95));border:1px solid rgba(255,215,0,0.25);backdrop-filter:blur(12px);box-shadow:0 10px 40px rgba(0,0,0,0.5);transition:transform 0.3s ease,box-shadow 0.3s ease;will-change:transform}
+.card-premium:hover{transform:translateY(-4px);box-shadow:0 15px 50px rgba(168,85,247,0.4),0 0 0 1px rgba(255,215,0,0.35);border-color:rgba(255,215,0,0.5)}
+
+.btn-gold{background:linear-gradient(135deg,#ffd700 0%,#ffaa00 50%,#ff8800 100%);color:#0a0a1a;font-weight:800;box-shadow:0 4px 15px rgba(255,215,0,0.35);position:relative;overflow:hidden;transition:transform 0.2s ease,box-shadow 0.2s ease;will-change:transform}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,215,0,0.55)}
+.btn-gold::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);background-size:200% 100%;animation:shine 3s infinite;pointer-events:none}
+
+.btn-purple{background:linear-gradient(135deg,#a855f7 0%,#ec4899 100%);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(168,85,247,0.4);transition:all 0.2s}
+.btn-purple:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(168,85,247,0.6)}
+.btn-emerald{background:linear-gradient(135deg,#10b981 0%,#059669 100%);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(16,185,129,0.4);transition:all 0.2s}
+.btn-emerald:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(16,185,129,0.6)}
+.btn-cyan{background:linear-gradient(135deg,#06b6d4 0%,#3b82f6 100%);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(6,182,212,0.35);transition:all 0.2s}
+.btn-cyan:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(6,182,212,0.55)}
+.btn-rose{background:linear-gradient(135deg,#f43f5e 0%,#e11d48 100%);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(244,63,94,0.4);transition:all 0.2s}
+.btn-rose:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(244,63,94,0.6)}
+.btn-orange{background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(249,115,22,0.4);transition:all 0.2s}
+.btn-orange:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(249,115,22,0.6)}
+
+.tab-btn{transition:all 0.2s ease;border:1px solid transparent}
+.tab-btn:hover{background:rgba(255,215,0,0.1);border-color:rgba(255,215,0,0.2)}
+.tab-active{background:linear-gradient(135deg,rgba(255,215,0,0.9),rgba(255,170,0,0.9))!important;color:#0a0a1a!important;box-shadow:0 4px 15px rgba(255,215,0,0.4);border-color:rgba(255,215,0,0.8)!important}
+.premium-badge{background:linear-gradient(135deg,#ffd700,#ff8800);color:#0a0a1a;font-weight:900;padding:3px 10px;border-radius:999px;font-size:10px;letter-spacing:0.08em;box-shadow:0 2px 12px rgba(255,215,0,0.5);animation:glow 2s ease infinite}
+
+.input-premium{background:rgba(15,10,35,0.8);border:1px solid rgba(168,85,247,0.3);color:#fff;transition:all 0.2s}
+.input-premium:focus{outline:none;border-color:#ffd700;box-shadow:0 0 0 3px rgba(255,215,0,0.15)}
+.input-premium::placeholder{color:rgba(255,255,255,0.35)}
+
+.page-body h4{font-weight:800;margin:14px 0 8px;background:linear-gradient(90deg,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-body p{margin-bottom:10px;line-height:1.8;color:#cbd5e1}
+.page-body ul{list-style:none;padding-left:0;margin-bottom:10px}
+.page-body li{margin-bottom:6px;padding-left:24px;position:relative;color:#cbd5e1}
+.page-body li::before{content:'▸';position:absolute;left:0;color:#ffd700;font-weight:900}
+.page-body strong{background:linear-gradient(90deg,#ffd700,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+
+.hero-glow{position:relative;overflow:hidden}
+.hero-glow::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,215,0,0.15) 0%,transparent 50%);pointer-events:none}
+.stat-card{position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);border-radius:50%;transform:translate(40%,-40%);pointer-events:none}
+
+.faq-item{background:rgba(15,10,35,0.7);border-radius:14px;padding:16px 20px;margin-bottom:12px;border:1px solid rgba(168,85,247,0.2);transition:all 0.2s}
+.faq-item:hover{border-color:rgba(255,215,0,0.4)}
+.faq-item summary{cursor:pointer;font-weight:700;background:linear-gradient(90deg,#ffd700,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.faq-item p{margin-top:12px;color:#94a3b8;font-size:14px;line-height:1.7}
+
+.admin-tab-active{background:linear-gradient(135deg,#ffd700,#ff8800)!important;color:#0a0a1a!important;font-weight:900;box-shadow:0 4px 15px rgba(255,215,0,0.5)}
+.mini-input{background:rgba(15,10,35,0.8);border:1px solid rgba(168,85,247,0.3);color:#fff;font-size:13px;padding:8px 12px;border-radius:10px;transition:all 0.2s;width:100%}
+.mini-input:focus{outline:none;border-color:#ffd700}
+.mini-input::placeholder{color:rgba(255,255,255,0.3)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,0.3)}
+::-webkit-scrollbar-thumb{background:linear-gradient(135deg,#a855f7,#ec4899);border-radius:10px}
+
+.announce-ticker{display:inline-block;white-space:nowrap;animation:marquee 25s linear infinite;padding-left:100%}
+.railtest-answer{max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s ease;padding:0 16px}
+.railtest-answer.open{max-height:500px;padding:14px 16px}
+</style>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'};</script>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<!-- ⚡ Confetti YAHAN SE HATA DIYA — ab sirf quiz pass pe load hoga -->
+<script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.5/babel.min.js"></script>
+
+<!--
+==========================================================
+🔥 GOOGLE ADSENSE — AdSense approve hone ke baad neeche
+wala comment hatao aur apna ca-pub-XXXXXXXXXXXXXXXX daalo:
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+==========================================================
+-->
+</head>
+<body class="premium-bg text-white min-h-screen">
+<div id="loading-screen"><div class="spinner"></div></div>
+<div id="root"></div>
+
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyACDO0wA92-tLq61dJ2QDrMBbq6ZCyR6GA",
+  authDomain: "edunotes-premium-db536.firebaseapp.com",
+  projectId: "edunotes-premium-db536",
+  storageBucket: "edunotes-premium-db536.firebasestorage.app",
+  messagingSenderId: "969924091393",
+  appId: "1:969924091393:web:e0d1b254c9ddb22b8e2a00"
+};
+
+window.addEventListener('error',function(e){var err=document.getElementById('loading-error');if(err){err.style.display='block';err.innerHTML='<b>⚠️ Error:</b> '+(e.message||'Unknown');}});
+
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  window.FB_AUTH = firebase.auth();
+  window.FB_DB = firebase.firestore();
+  try { window.FB_DB.enablePersistence({synchronizeTabs:true}).catch(()=>{}); } catch(e) {}
+  console.log('✅ Backend initialized');
+} catch(e) { console.error('Backend init failed:', e); }
+
+// ⚡ SAFETY NET: spinner 15 sec baad force hide (agar MutationObserver fail ho jaye)
+setTimeout(function(){
+  var l=document.getElementById('loading-screen');
+  if(l) l.style.display='none';
+}, 15000);
+</script>
+
+<script type="text/babel" data-presets="react">
+const {useState,useEffect,useMemo,memo,useCallback,useRef}=React;
+
+const CACHE_PREFIX='edu_v3_';
+const getCache=(k)=>{try{const r=localStorage.getItem(CACHE_PREFIX+k);return r?JSON.parse(r):null;}catch{return null;}};
+const setCache=(k,v)=>{try{localStorage.setItem(CACHE_PREFIX+k,JSON.stringify(v));}catch{}};
+
+const SEED_NOTES=[
+{id:1,classLevel:6,subject:'Science',medium:'en',isPremium:false,title:'Sources of Food & Components',pages:[{heading:'1. Introduction',body:'<p>Food gives energy, helps growth, protects from diseases.</p>'},{heading:'2. Sources',body:'<ul><li>Plants: grains, fruits</li><li>Animals: milk, eggs</li></ul>'},{heading:'3. Components',body:'<ul><li>Carbohydrates</li><li>Proteins</li><li>Fats</li><li>Vitamins</li></ul>'},{heading:'4. Balanced Diet',body:'<p>All nutrients in correct proportion.</p>'},{heading:'5. Deficiency',body:'<ul><li>Vit A – Night blindness</li><li>Vit C – Scurvy</li></ul>'}]},
+{id:2,classLevel:10,subject:'Science',medium:'hi',isPremium:true,title:'रासायनिक अभिक्रियाएँ',pages:[{heading:'1. परिचय',body:'<p>पदार्थ नए पदार्थों में बदलते हैं।</p>'},{heading:'2. लक्षण',body:'<ul><li>अवस्था</li><li>रंग</li><li>गैस</li></ul>'},{heading:'3. प्रकार',body:'<ul><li>संयोजन</li><li>वियोजन</li></ul>'},{heading:'4. ऑक्सीकरण',body:'<p>O₂ का जुड़ना।</p>'},{heading:'5. संक्षारण',body:'<p>जंग लगना।</p>'}]},
+];
+
+const SEED_QUIZZES=[
+{id:1,classLevel:6,subject:'Science',medium:'en',title:'Science Quiz – Class 6',questions:[{q:'Vitamin from sunlight?',options:['A','B','C','D'],correct:3},{q:'Scurvy due to?',options:['Vit A','Vit C','Vit D','Iron'],correct:1}]},
+{id:2,classLevel:10,subject:'Science',medium:'hi',title:'रासायनिक अभिक्रिया क्विज़',questions:[{q:'जंग?',options:['अपचयन','ऑक्सीकरण','उदासीनीकरण','वियोजन'],correct:1},{q:'A+B→AB?',options:['वियोजन','संयोजन','विस्थापन','रेडॉक्स'],correct:1}]},
+];
+
+const SEED_ANNOUNCEMENTS=[{id:1,text:'🎉 EduNotes Premium में आपका स्वागत! Naye notes regularly add हो रहे हैं।',type:'success',date:'01 Nov 2025'}];
+const SEED_RAILTEST=[{id:1,question:'What is the full form of RRB?',answer:'Railway Recruitment Board',category:'General'},{id:2,question:'When was Indian Railways established?',answer:'16 April 1853',category:'History'}];
+
+const SYLLABUS=[
+{class:'6',chapters:['Food: Where Does It Come From?','Components of Food','Fibre to Fabric','Sorting Materials into Groups','Separation of Substances','Changes Around Us','Getting to Know Plants','Knowing Our Numbers','Whole Numbers','Playing with Numbers','Basic Geometrical Ideas']},
+{class:'7',chapters:['Nutrition in Plants','Nutrition in Animals','Heat','Acids, Bases and Salts','Physical and Chemical Changes','Weather, Climate and Adaptations','Integers','Fractions and Decimals','Data Handling','Simple Equations','Lines and Angles']},
+{class:'8',chapters:['Crop Production and Management','Microorganisms','Synthetic Fibres and Plastics','Materials: Metals and Non-Metals','Coal and Petroleum','Combustion and Flame','Rational Numbers','Linear Equations in One Variable','Understanding Quadrilaterals','Data Handling']},
+{class:'9',chapters:['Matter in Our Surroundings','Is Matter Around Us Pure','Atoms and Molecules','The Fundamental Unit of Life','Tissues','Number Systems','Polynomials','Coordinate Geometry','Linear Equations in Two Variables','Introduction to Euclid\'s Geometry']},
+{class:'10',chapters:['Chemical Reactions and Equations','Acids, Bases and Salts','Metals and Non-metals','Carbon and its Compounds','Life Processes','Light - Reflection and Refraction','Real Numbers','Polynomials','Pair of Linear Equations in Two Variables','Quadratic Equations','Arithmetic Progressions']},
+{class:'11',chapters:['Units and Measurements','Motion in a Straight Line','Laws of Motion','Work, Energy and Power','System of Particles and Rotational Motion','Some Basic Concepts of Chemistry','Structure of Atom','Classification of Elements','Sets','Relations and Functions','Trigonometric Functions']},
+{class:'12',chapters:['Electric Charges and Fields','Electrostatic Potential and Capacitance','Current Electricity','Moving Charges and Magnetism','Magnetism and Matter','Solutions','Electrochemistry','Chemical Kinetics','Relations and Functions','Inverse Trigonometric Functions','Matrices','Determinants']}
+];
+
+const DEFAULT_SETTINGS={
+  siteName:'EduNotes Premium',price:49,upiId:'9031795956@ybl',upiName:'EduNotes Premium',
+  whatsappNumber:'7488561546',qrCode:'',
+  adTopCode:'',adMiddleCode:'',adBottomCode:''
+};
+
+const compressImage=(file,callback)=>{
+const reader=new FileReader();
+reader.onloadend=()=>{
+const img=new Image();
+img.onload=()=>{
+const canvas=document.createElement('canvas');const MAX=800;
+let w=img.width,h=img.height;
+if(w>h){if(w>MAX){h=h*(MAX/w);w=MAX;}}else{if(h>MAX){w=w*(MAX/h);h=MAX;}}
+canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
+callback(canvas.toDataURL('image/jpeg',0.6));
+};img.src=reader.result;};
+reader.readAsDataURL(file);};
+
+// ⚡ LAZY LOAD CONFETTI — sirf zaroorat pe
+const loadConfetti=()=>{
+  if(window.confetti) return Promise.resolve();
+  return new Promise((resolve)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+    s.onload=resolve;s.onerror=resolve;
+    document.head.appendChild(s);
+  });
+};
+
+const AdSlot=memo(function AdSlot({code,slot}){
+  const ref=useRef(null);
+  useEffect(()=>{
+    if(!code||!code.trim()||!ref.current)return;
+    ref.current.innerHTML='';
+    try{
+      const frag=document.createRange().createContextualFragment(code);
+      ref.current.appendChild(frag);
+      setTimeout(()=>{
+        try{
+          const ins=ref.current?.querySelectorAll('.adsbygoogle:not([data-adsbygoogle-status])');
+          if(ins&&ins.length>0){ins.forEach(()=>(window.adsbygoogle=window.adsbygoogle||[]).push({}));}
+        }catch(e){}
+      },200);
+    }catch(e){console.warn('Ad error:',e);}
+  },[code]);
+  if(!code||!code.trim()){
+    return(
+      <div className="my-3 rounded-xl border border-dashed border-yellow-500/20 bg-black/20 p-3 text-center">
+        <p className="text-[11px] text-white/40 font-bold">📢 Ad Space • {slot}</p>
+        <p className="text-[9px] text-white/25 mt-0.5">Admin → Settings → Ads में code डालें</p>
+      </div>
+    );
+  }
+  return <div ref={ref} className="my-3 flex justify-center overflow-hidden"/>;
+});
+
+function DevBanner(){
+return(
+<div className="w-full bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 py-3 px-3 shadow-2xl relative overflow-hidden">
+<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" style={{animation:'shine 4s infinite',backgroundSize:'200% 100%'}}/>
+<div className="max-w-7xl mx-auto border-2 border-yellow-200/60 rounded-2xl py-2.5 px-5 shadow-2xl bg-black/30 backdrop-blur-md relative">
+<p className="text-center text-yellow-50 text-sm sm:text-base font-black tracking-[0.15em]">⭐ DEVELOPED BY : <span className="rainbow-text bg-white rounded-lg px-3 py-0.5 shadow-lg">ABHISHEK KUMAR YADAV</span> ⭐</p>
+</div></div>);
+}
+
+function StudyCircleChart({percent,done,total}){
+const radius=75;const circ=2*Math.PI*radius;const offset=circ-(percent/100)*circ;
+return(
+<div className="flex flex-col items-center py-2">
+<svg width="210" height="210" viewBox="0 0 210 210" style={{filter:'drop-shadow(0 0 20px rgba(255,215,0,0.4))'}}>
+<defs><linearGradient id="gradCircle" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#ffd700"/><stop offset="50%" stopColor="#a855f7"/><stop offset="100%" stopColor="#ec4899"/></linearGradient></defs>
+<circle cx="105" cy="105" r={radius} fill="none" stroke="rgba(168,85,247,0.15)" strokeWidth="18"/>
+<circle cx="105" cy="105" r={radius} fill="none" stroke="url(#gradCircle)" strokeWidth="18" strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 105 105)" style={{transition:'stroke-dashoffset 0.8s ease-out',filter:'drop-shadow(0 0 10px rgba(255,215,0,0.6))'}}/>
+<text x="105" y="103" textAnchor="middle" fontSize="40" fontWeight="900" fill="url(#gradCircle)">{percent}%</text>
+<text x="105" y="128" textAnchor="middle" fontSize="13" fontWeight="700" fill="#94a3b8">{done}/{total} Notes</text>
+</svg>
+<p className="text-center text-sm font-bold mt-2" style={{color:'#ffd700'}}>{percent>=75?'🎉 Excellent!':percent>=50?'💪 Good Progress':percent>0?'📚 Keep Going':'🚀 Start Reading!'}</p>
+</div>);
+}
+
+function QuizResultsChart({history}){
+if(history.length===0){return(<div className="text-center py-12 opacity-70"><p className="text-6xl mb-4">🎯</p><p className="font-bold text-white">Abhi tak koi quiz nahi diya.</p><p className="text-xs mt-2 opacity-60">Quiz tab se pehla quiz dein!</p></div>);}
+return(
+<div className="space-y-4 max-h-80 overflow-y-auto pr-2">
+{history.slice(0,10).map((h,i)=>{
+const pct=Math.round((h.score/h.total)*100);
+const barColor=pct>=80?'linear-gradient(90deg,#10b981,#06b6d4)':pct>=50?'linear-gradient(90deg,#f59e0b,#f97316)':'linear-gradient(90deg,#ef4444,#ec4899)';
+return(
+<div key={i} className="pb-2">
+<div className="flex justify-between text-xs font-bold mb-2"><span className="truncate pr-2 text-white/90">{h.title}</span><span style={{color:pct>=80?'#10b981':pct>=50?'#f59e0b':'#ef4444'}}>{h.score}/{h.total} ({pct}%)</span></div>
+<div className="w-full h-3 bg-black/30 rounded-full overflow-hidden border border-white/10"><div style={{width:`${pct}%`,background:barColor,transition:'width 0.6s ease-out',height:'100%',borderRadius:'999px',boxShadow:'0 0 12px rgba(255,215,0,0.3)'}}/></div>
+<p className="text-[10px] opacity-50 mt-1 text-white">{h.date}</p>
+</div>);})}
+</div>);
+}
+
+const NoteCard=memo(function NoteCard({note,onOpen,onToggle,isRead,userPremium,price}){
+const locked=note.isPremium&&!userPremium;
+return(
+<div className="card-premium rounded-2xl overflow-hidden">
+<div className={`p-3 bg-gradient-to-r ${note.medium==='en'?'from-cyan-500 to-blue-600':'from-orange-500 to-pink-600'} text-white relative`}>
+<div className="flex justify-between text-xs font-black"><span>Class {note.classLevel} • {note.subject}</span><span>{note.medium==='en'?'EN':'हिन्दी'}</span></div>
+{note.isPremium&&<div className="absolute top-2 right-2 bg-yellow-400 text-black text-[9px] font-black px-2 py-0.5 rounded-full shadow-lg">👑 PRO</div>}
+</div>
+<div className="p-5">
+<h4 className="font-bold text-base mb-2 text-white">{note.title}</h4>
+<p className="text-xs opacity-60 mb-4 text-white/70">📄 {note.pages.length} Pages • {note.isPremium?'🔒 Premium':'✅ Free'} {isRead&&'• ✔ Read'}</p>
+<button onClick={()=>onOpen(note)} className={`w-full py-2.5 rounded-xl font-bold text-sm mb-2 ${locked?'btn-gold':'btn-emerald'}`}>{locked?`🔓 Unlock @ ₹${price}`:'📄 Read Notes'}</button>
+<button onClick={()=>onToggle(note.id)} className={`w-full py-2 rounded-xl font-black text-xs border-2 ${isRead?'bg-emerald-500 text-white border-emerald-400':'border-white/20 text-white/60 hover:border-yellow-400'}`}>{isRead?'✅ Marked as Read':'⬜ Mark as Read'}</button>
+</div></div>);
+});
+
+const QuizCard=memo(function QuizCard({quiz,onStart}){
+return(
+<div className="card-premium rounded-2xl overflow-hidden">
+<div className="p-3 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white"><div className="flex justify-between text-xs font-black"><span>Class {quiz.classLevel} • {quiz.subject}</span><span>{quiz.medium==='en'?'EN':'हिन्दी'}</span></div></div>
+<div className="p-5"><h4 className="font-bold mb-2 text-white">{quiz.title}</h4><p className="text-xs opacity-60 mb-4 text-white/70">❓ {quiz.questions.length} Questions</p><button onClick={()=>onStart(quiz)} className="btn-emerald w-full py-2.5 rounded-xl text-sm">▶️ Start Quiz</button></div>
+</div>);
+});
+
+function App(){
+const [activeTab,setActiveTab]=useState('home');
+const [logoClicks,setLogoClicks]=useState(0);
+const [showAdmin,setShowAdmin]=useState(false);
+const [adminTab,setAdminTab]=useState('settings');
+
+const [notes,setNotes]=useState(()=>getCache('notes')||[]);
+const [quizzes,setQuizzes]=useState(()=>getCache('quizzes')||[]);
+const [announcements,setAnnouncements]=useState(()=>getCache('announcements')||[]);
+const [railtest,setRailtest]=useState(()=>getCache('railtest')||[]);
+const [payments,setPayments]=useState([]);
+const [studentsList,setStudentsList]=useState([]);
+const [settings,setSettings]=useState(()=>getCache('settings')||DEFAULT_SETTINGS);
+const [loadingData,setLoadingData]=useState(false);
+const [seeded,setSeeded]=useState(false);
+
+const [studentUser,setStudentUser]=useState(()=>{const s=localStorage.getItem('edu_student');return s?JSON.parse(s):null;});
+const [loginName,setLoginName]=useState('');
+const [loginMobile,setLoginMobile]=useState('');
+
+const [notesMedium,setNotesMedium]=useState('all');
+const [notesClass,setNotesClass]=useState('all');
+const [notesSubject,setNotesSubject]=useState('all');
+const [searchQuery,setSearchQuery]=useState('');
+const [openNote,setOpenNote]=useState(null);
+const [openPage,setOpenPage]=useState(0);
+const [quizMedium,setQuizMedium]=useState('all');
+const [quizClass,setQuizClass]=useState('all');
+const [quizSubject,setQuizSubject]=useState('all');
+const [activeQuiz,setActiveQuiz]=useState(null);
+const [quizAnswers,setQuizAnswers]=useState({});
+const [quizSubmitted,setQuizSubmitted]=useState(false);
+const [quizScore,setQuizScore]=useState(0);
+const [user,setUser]=useState({name:'Student',isPremium:false});
+const [readNotes,setReadNotes]=useState([]);
+const [quizHistory,setQuizHistory]=useState([]);
+
+const [adminUser,setAdminUser]=useState(null);
+const [adminEmail,setAdminEmail]=useState('');
+const [adminLoginPass,setAdminLoginPass]=useState('');
+const [adminUnlocked,setAdminUnlocked]=useState(false);
+
+const [settingsForm,setSettingsForm]=useState({upiId:'',upiName:'',price:'',whatsappNumber:'',qrCode:'',adTopCode:'',adMiddleCode:'',adBottomCode:''});
+const [settingsSaved,setSettingsSaved]=useState(false);
+const [utrInput,setUtrInput]=useState('');
+const [screenshotPreview,setScreenshotPreview]=useState(null);
+const [zoomImage,setZoomImage]=useState(null);
+
+const [showNoteForm,setShowNoteForm]=useState(false);
+const [newNote,setNewNote]=useState({title:'',classLevel:6,subject:'Science',medium:'en',isPremium:false,pages:[{heading:'Page 1',body:''}]});
+const [showQuizForm,setShowQuizForm]=useState(false);
+const [newQuiz,setNewQuiz]=useState({title:'',classLevel:6,subject:'Science',medium:'en',questions:[{q:'',options:['','','',''],correct:0}]});
+const [newAnnouncement,setNewAnnouncement]=useState({text:'',type:'info'});
+const [newRailtest,setNewRailtest]=useState({question:'',category:'General'});
+const [openRailId,setOpenRailId]=useState(null);
+
+useEffect(()=>{
+  if(!window.FB_AUTH) return;
+  const unsub=window.FB_AUTH.onAuthStateChanged(u=>{
+    setAdminUser(u); setAdminUnlocked(!!u);
+  });
+  return unsub;
+},[]);
+
+useEffect(()=>{
+  if(!window.FB_DB) return;
+  const db=window.FB_DB;
+
+  const handle=(name,setter)=>{
+    return db.collection(name).onSnapshot(snap=>{
+      const data=snap.docs.map(d=>({...d.data(),id:d.id}));
+      data.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+      setter(data); setCache(name,data);
+    },err=>console.warn(name+' err:',err.message));
+  };
+
+  const u1=handle('notes',setNotes);
+  const u2=handle('quizzes',setQuizzes);
+  const u3=handle('announcements',setAnnouncements);
+  const u4=handle('railtest',setRailtest);
+  const u5=handle('payments',setPayments);
+  const u6=handle('students',setStudentsList);
+
+  const u7=db.collection('config').doc('settings').onSnapshot(doc=>{
+    if(doc.exists){const s={...DEFAULT_SETTINGS,...doc.data()};setSettings(s);setCache('settings',s);}
+  },err=>console.warn('settings err:',err.message));
+
+  return ()=>{u1();u2();u3();u4();u5();u6();u7();};
+},[]);
+
+useEffect(()=>{
+  if(adminUnlocked&&settings){
+    setSettingsForm({
+      upiId:settings.upiId||'',upiName:settings.upiName||'',
+      price:(settings.price||49).toString(),whatsappNumber:settings.whatsappNumber||'',
+      qrCode:settings.qrCode||'',
+      adTopCode:settings.adTopCode||'',adMiddleCode:settings.adMiddleCode||'',adBottomCode:settings.adBottomCode||''
+    });
+  }
+},[adminUnlocked,settings]);
+
+useEffect(()=>{
+  const t=setTimeout(()=>setLoadingData(false),3000);
+  return ()=>clearTimeout(t);
+},[]);
+
+const subjectsList=['Science','Maths','Social Science','Physics','Chemistry','Biology'];
+const classesList=['6','7','8','9','10','11','12'];
+
+const filteredNotes=useMemo(()=>notes.filter(n=>(notesMedium==='all'||n.medium===notesMedium)&&(notesClass==='all'||n.classLevel.toString()===notesClass)&&(notesSubject==='all'||n.subject===notesSubject)&&(searchQuery===''||n.title.toLowerCase().includes(searchQuery.toLowerCase()))),[notes,notesMedium,notesClass,notesSubject,searchQuery]);
+const filteredQuizzes=useMemo(()=>quizzes.filter(q=>(quizMedium==='all'||q.medium===quizMedium)&&(quizClass==='all'||q.classLevel.toString()===quizClass)&&(quizSubject==='all'||q.subject===quizSubject)&&(searchQuery===''||q.title.toLowerCase().includes(searchQuery.toLowerCase()))),[quizzes,quizMedium,quizClass,quizSubject,searchQuery]);
+const freeNotes=useMemo(()=>notes.filter(n=>!n.isPremium),[notes]);
+
+const studyPct=notes.length>0?Math.round((readNotes.length/notes.length)*100):0;
+const subjectProgress=useMemo(()=>subjectsList.map(sub=>{const sn=notes.filter(n=>n.subject===sub);const done=sn.filter(n=>readNotes.includes(n.id)).length;return{subject:sub,total:sn.length,done,pct:sn.length>0?Math.round(done/sn.length*100):0};}).filter(s=>s.total>0),[notes,readNotes]);
+const totalAttempts=quizHistory.length;
+const avgScore=totalAttempts>0?Math.round(quizHistory.reduce((s,h)=>s+(h.score/h.total*100),0)/totalAttempts):0;
+const bestScore=totalAttempts>0?Math.max(...quizHistory.map(h=>Math.round(h.score/h.total*100))):0;
+
+const handleStudentLogin=async(e)=>{
+  e.preventDefault();
+  if(!loginName.trim()||!loginMobile.trim()){alert('Please enter both Name and Mobile Number');return;}
+  if(loginMobile.trim().length<10){alert('Please enter a valid 10-digit Mobile Number');return;}
+  try{
+    const studentData={name:loginName.trim(),mobile:loginMobile.trim(),lastLogin:Date.now()};
+    await window.FB_DB.collection('students').doc(loginMobile.trim()).set(studentData,{merge:true});
+    localStorage.setItem('edu_student',JSON.stringify(studentData));
+    setStudentUser(studentData);
+    setUser({name:studentData.name,isPremium:user.isPremium});
+  }catch(err){alert('Login error: '+err.message);}
+};
+
+const handleStudentLogout=()=>{
+  if(!confirm('Kya aap logout karna chahte hain?'))return;
+  localStorage.removeItem('edu_student');
+  setStudentUser(null);setActiveTab('home');
+  alert('✅ Logout successful!');
+};
+
+const toggleRead=useCallback((id)=>{setReadNotes(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);},[]);
+const handleLogoClick=()=>{const nc=logoClicks+1;setLogoClicks(nc);if(nc>=5){setShowAdmin(true);setLogoClicks(0);return;}setTimeout(()=>setLogoClicks(0),2000);};
+const openNoteHandler=useCallback((note)=>{if(note.isPremium&&!user.isPremium){alert('🔒 Premium note. Premium tab se unlock karein.');return;}setOpenNote(note);setOpenPage(0);},[user.isPremium]);
+const startQuiz=useCallback((quiz)=>{setActiveQuiz(quiz);setQuizAnswers({});setQuizSubmitted(false);setQuizScore(0);},[]);
+
+// ⚡ submitQuiz ab lazy confetti load karta hai
+const submitQuiz=()=>{
+  let s=0;activeQuiz.questions.forEach((q,i)=>{if(quizAnswers[i]===q.correct)s++;});
+  setQuizScore(s);setQuizSubmitted(true);
+  const pct=Math.round((s/activeQuiz.questions.length)*100);
+  if(pct>=80){loadConfetti().then(()=>{if(window.confetti)window.confetti({particleCount:150,spread:70,origin:{y:0.6}});});}
+  const now=new Date();
+  setQuizHistory(prev=>[...prev,{title:activeQuiz.title,score:s,total:activeQuiz.questions.length,date:now.toLocaleDateString('en-IN')+' '+now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}]);
+};
+const closeQuiz=()=>{setActiveQuiz(null);setQuizAnswers({});setQuizSubmitted(false);};
+
+const handleScreenshotChange=(e)=>{const f=e.target.files[0];if(!f)return;compressImage(f,c=>setScreenshotPreview(c));};
+const handleQrUpload=(e)=>{const f=e.target.files[0];if(!f)return;compressImage(f,c=>setSettingsForm({...settingsForm,qrCode:c}));};
+
+const handleAdminLogin=async(e)=>{
+  e.preventDefault();
+  if(!window.FB_AUTH){alert('System not loaded');return;}
+  try{
+    await window.FB_AUTH.signInWithEmailAndPassword(adminEmail.trim(),adminLoginPass);
+    alert('✅ Admin login successful!');setAdminLoginPass('');setActiveTab('admin');setShowAdmin(false);
+  }catch(err){alert('❌ Login failed: '+(err.message||'Galat email ya password'));}
+};
+const handleAdminLogout=async()=>{
+  if(!confirm('Logout karna hai?'))return;
+  await window.FB_AUTH.signOut();setAdminUnlocked(false);setShowAdmin(false);
+  alert('✅ Logout successful');
+};
+
+const handlePaymentSubmit=async(e)=>{
+  e.preventDefault();
+  if(!screenshotPreview){alert('⚠️ Screenshot upload karein!');return;}
+  if(!/^\d{12}$/.test(utrInput.trim())){alert('⚠️ 12-digit UTR dalein!');return;}
+  try{
+    await window.FB_DB.collection('payments').add({studentName:studentUser?studentUser.name:'Student',username:studentUser?studentUser.mobile:'unknown',amount:settings.price,utr:utrInput.trim(),screenshot:screenshotPreview,status:'pending',createdAt:Date.now()});
+    setUtrInput('');setScreenshotPreview(null);
+    alert('✅ Payment submitted! Admin approve karega.');
+  }catch(err){alert('❌ Error: '+err.message);}
+};
+const verifyPayment=async(id,status)=>{
+  try{await window.FB_DB.collection('payments').doc(id).update({status});if(status==='approved'){setUser({...user,isPremium:true});alert('🎉 Approved!');}}
+  catch(err){alert('❌ '+err.message);}
+};
+const deletePayment=async(id)=>{if(!confirm('Payment delete karein?'))return;try{await window.FB_DB.collection('payments').doc(id).delete();alert('✅ Deleted!');}catch(err){alert('❌ '+err.message);}};
+
+const saveSettings=async(e)=>{
+  e.preventDefault();
+  try{
+    await window.FB_DB.collection('config').doc('settings').set({
+      siteName:'EduNotes Premium',
+      upiId:settingsForm.upiId||settings.upiId,
+      upiName:settingsForm.upiName||settings.upiName,
+      price:Number(settingsForm.price)||settings.price,
+      whatsappNumber:settingsForm.whatsappNumber||settings.whatsappNumber,
+      qrCode:settingsForm.qrCode||settings.qrCode||'',
+      adTopCode:settingsForm.adTopCode||'',
+      adMiddleCode:settingsForm.adMiddleCode||'',
+      adBottomCode:settingsForm.adBottomCode||''
+    });
+    setSettingsSaved(true);setTimeout(()=>setSettingsSaved(false),3000);
+    alert('✅ Settings saved!');
+  }catch(err){alert('❌ '+err.message);}
+};
+
+const addPage=()=>setNewNote({...newNote,pages:[...newNote.pages,{heading:`Page ${newNote.pages.length+1}`,body:''}]});
+const removePage=(i)=>{if(newNote.pages.length<=1){alert('Kam se kam 1 page');return;}setNewNote({...newNote,pages:newNote.pages.filter((_,idx)=>idx!==i)});};
+const updatePage=(i,field,val)=>{const p=[...newNote.pages];p[i]={...p[i],[field]:val};setNewNote({...newNote,pages:p});};
+const saveNewNote=async()=>{
+  if(!newNote.title.trim()){alert('⚠️ Title zaroori!');return;}
+  if(newNote.pages.some(p=>!p.heading.trim()||!p.body.trim())){alert('⚠️ Har page heading+body zaroori!');return;}
+  try{
+    await window.FB_DB.collection('notes').add({title:newNote.title,classLevel:Number(newNote.classLevel),subject:newNote.subject,medium:newNote.medium,isPremium:newNote.isPremium,pages:newNote.pages,createdAt:Date.now()});
+    setNewNote({title:'',classLevel:6,subject:'Science',medium:'en',isPremium:false,pages:[{heading:'Page 1',body:''}]});setShowNoteForm(false);
+    alert('✅ Note added! Turant sabko dikhega.');
+  }catch(err){alert('❌ '+err.message);}
+};
+const deleteNote=async(id,title)=>{if(!confirm(`"${title}" delete karein?`))return;try{await window.FB_DB.collection('notes').doc(id).delete();alert('✅ Deleted!');}catch(err){alert('❌ '+err.message);}};
+
+const addQuestion=()=>setNewQuiz({...newQuiz,questions:[...newQuiz.questions,{q:'',options:['','','',''],correct:0}]});
+const removeQuestion=(i)=>{if(newQuiz.questions.length<=1){alert('Kam se kam 1 Q');return;}setNewQuiz({...newQuiz,questions:newQuiz.questions.filter((_,idx)=>idx!==i)});};
+const updateQuestion=(i,field,val)=>{const q=[...newQuiz.questions];q[i]={...q[i],[field]:val};setNewQuiz({...newQuiz,questions:q});};
+const updateOption=(qi,oi,val)=>{const q=[...newQuiz.questions];const opts=[...q[qi].options];opts[oi]=val;q[qi]={...q[qi],options:opts};setNewQuiz({...newQuiz,questions:q});};
+const saveNewQuiz=async()=>{
+  if(!newQuiz.title.trim()){alert('⚠️ Title zaroori!');return;}
+  if(newQuiz.questions.some(q=>!q.q.trim()||q.options.some(o=>!o.trim()))){alert('⚠️ Questions + options zaroori!');return;}
+  try{
+    await window.FB_DB.collection('quizzes').add({title:newQuiz.title,classLevel:Number(newQuiz.classLevel),subject:newQuiz.subject,medium:newQuiz.medium,questions:newQuiz.questions,createdAt:Date.now()});
+    setNewQuiz({title:'',classLevel:6,subject:'Science',medium:'en',questions:[{q:'',options:['','','',''],correct:0}]});setShowQuizForm(false);
+    alert('✅ Quiz added!');
+  }catch(err){alert('❌ '+err.message);}
+};
+const deleteQuiz=async(id,title)=>{if(!confirm(`"${title}" delete karein?`))return;try{await window.FB_DB.collection('quizzes').doc(id).delete();alert('✅ Deleted!');}catch(err){alert('❌ '+err.message);}};
+
+const saveAnnouncement=async()=>{
+  if(!newAnnouncement.text.trim()){alert('⚠️ Text zaroori!');return;}
+  const now=new Date();
+  try{
+    await window.FB_DB.collection('announcements').add({text:newAnnouncement.text,type:newAnnouncement.type,date:now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),createdAt:Date.now()});
+    setNewAnnouncement({text:'',type:'info'});alert('✅ Announcement posted!');
+  }catch(err){alert('❌ '+err.message);}
+};
+const deleteAnnouncement=async(id)=>{if(!confirm('Delete karein?'))return;try{await window.FB_DB.collection('announcements').doc(id).delete();alert('✅ Deleted!');}catch(err){alert('❌ '+err.message);}};
+
+const saveRailtestQuestion=async()=>{
+  if(!newRailtest.question.trim()){alert('⚠️ Question zaroori hai!');return;}
+  try{
+    await window.FB_DB.collection('railtest').add({question:newRailtest.question,category:newRailtest.category||'General',answer:'',createdAt:Date.now()});
+    setNewRailtest({question:'',category:'General'});alert('✅ Question added! Ab iska Answer jodein.');
+  }catch(err){alert('❌ '+err.message);}
+};
+const addRailtestAnswer=async(id)=>{
+  const ans=prompt('Enter Answer for this question:');
+  if(ans&&ans.trim()){
+    try{await window.FB_DB.collection('railtest').doc(id).update({answer:ans.trim()});alert('✅ Answer added!');}
+    catch(err){alert('❌ '+err.message);}
+  }
+};
+const deleteRailtest=async(id)=>{if(!confirm('Delete karein?'))return;try{await window.FB_DB.collection('railtest').doc(id).delete();alert('✅ Deleted!');}catch(err){alert('❌ '+err.message);}};
+
+const seedInitialData=async()=>{
+  if(!confirm('Initial sample data Database mein add karein? (Sirf pehli baar)'))return;
+  try{
+    for(const n of SEED_NOTES){await window.FB_DB.collection('notes').add({...n,createdAt:Date.now()});}
+    for(const q of SEED_QUIZZES){await window.FB_DB.collection('quizzes').add({...q,createdAt:Date.now()});}
+    for(const a of SEED_ANNOUNCEMENTS){await window.FB_DB.collection('announcements').add({...a,createdAt:Date.now()});}
+    for(const r of SEED_RAILTEST){await window.FB_DB.collection('railtest').add({...r,createdAt:Date.now()});}
+    await window.FB_DB.collection('config').doc('settings').set(DEFAULT_SETTINGS);
+    setSeeded(true);alert('✅ Sample data added!');
+  }catch(err){alert('❌ '+err.message);}
+};
+
+const inputCls='input-premium w-full p-3 rounded-xl text-sm';
+const miniCls='mini-input';
+const annColor=(type)=>{if(type==='success')return 'border-emerald-500/50 bg-emerald-500/10';if(type==='important')return 'border-yellow-500/60 bg-yellow-500/10';if(type==='warning')return 'border-rose-500/50 bg-rose-500/10';return 'border-cyan-500/50 bg-cyan-500/10';};
+const annIcon=(type)=>{if(type==='success')return '✅';if(type==='important')return '📢';if(type==='warning')return '⚠️';return 'ℹ️';};
+
+if(!studentUser&&!adminUser){
+  if(showAdmin){
+    return(
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="glass rounded-3xl p-8 max-w-md w-full border-2 border-yellow-500/30 shadow-2xl">
+          <h2 className="text-2xl font-black mb-4 text-center text-yellow-400">🔐 ADMIN LOGIN</h2>
+          <p className="text-xs text-white/60 text-center mb-4">Enter Admin Email & Password</p>
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            <input type="email" value={adminEmail} onChange={e=>setAdminEmail(e.target.value)} placeholder="Admin Email" className={inputCls} required/>
+            <input type="password" value={adminLoginPass} onChange={e=>setAdminLoginPass(e.target.value)} placeholder="Admin Password" className={inputCls} required/>
+            <button type="submit" className="btn-purple w-full py-3 rounded-xl">🔓 Login</button>
+            <button type="button" onClick={()=>setShowAdmin(false)} className="w-full py-2 text-xs text-white/50 hover:text-white font-semibold transition">← Back to Student Login</button>
+          </form>
+        </div>
+      </div>);
+  }
+  return(
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="glass rounded-3xl p-8 max-w-md w-full border-2 border-yellow-500/30 shadow-2xl relative">
+        <div className="text-center mb-6">
+          <p className="text-4xl mb-2 cursor-pointer select-none" onClick={handleLogoClick}>🎓</p>
+          <h2 className="text-2xl font-black bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">Student Login</h2>
+          <p className="text-xs text-white/60 mt-2">Please enter your details to continue</p>
+        </div>
+        <form onSubmit={handleStudentLogin} className="space-y-5">
+          <div><label className="block text-sm font-bold mb-1 text-white">Students Name:-</label><input type="text" placeholder="Enter your full name" value={loginName} onChange={e=>setLoginName(e.target.value)} className={inputCls} required/></div>
+          <div><label className="block text-sm font-bold mb-1 text-white">Mobile Number:-</label><input type="tel" placeholder="Enter 10-digit mobile number" value={loginMobile} onChange={e=>setLoginMobile(e.target.value.replace(/\D/g,''))} maxLength={10} className={inputCls} required/></div>
+          <button type="submit" className="btn-emerald w-full py-3.5 rounded-xl text-base font-black tracking-wide shadow-lg">Login</button>
+        </form>
+      </div>
+    </div>);
+}
+
+return(
+<div className="min-h-screen">
+<DevBanner/>
+<header className="sticky top-0 z-40 glass-dark border-b border-yellow-500/20 shadow-2xl">
+<div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+  <div className="flex items-center gap-2 font-black text-lg cursor-pointer select-none" onClick={handleLogoClick}>
+    <span className="bg-gradient-to-r from-yellow-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">📚 {settings.siteName}</span>
+    {user.isPremium&&<span className="premium-badge">🌟 PRO</span>}
+  </div>
+  <div className="flex flex-wrap items-center gap-3">
+    {studentUser&&(
+      <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-xl border border-white/10">
+        <span className="text-white text-xs sm:text-sm font-semibold">Welcome, {studentUser.name}</span>
+        <button onClick={handleStudentLogout} className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] sm:text-xs font-bold transition shadow-md">Logout</button>
+      </div>
+    )}
+    <nav className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm">
+      {[{id:'home',label:'📊 Home'},{id:'notes',label:'📖 Notes'},{id:'quiz',label:'🎯 Quiz'},{id:'syllabus',label:'📚 Syllabus'},{id:'railtest',label:'🚂 Railtest'},{id:'premium',label:'💎 Premium'},...((showAdmin||adminUser)?[{id:'admin',label:'⚙️ Admin'}]:[])].map(t=>(
+      <button key={t.id} onClick={()=>{setActiveTab(t.id);setSearchQuery('');}} className={`tab-btn px-3 py-2 rounded-xl font-bold text-white/90 ${activeTab===t.id?'tab-active':''}`}>{t.label}</button>
+      ))}
+    </nav>
+  </div>
+</div>
+</header>
+
+{announcements.length>0&&(
+<div className="bg-gradient-to-r from-yellow-500/20 via-purple-500/20 to-pink-500/20 border-b border-yellow-500/30 overflow-hidden py-2">
+<div className="whitespace-nowrap"><span className="announce-ticker text-sm font-bold text-yellow-200">📢 {announcements.map(a=>a.text).join('     •     ')}</span></div>
+</div>
+)}
+
+<main className="max-w-7xl mx-auto p-4 sm:p-6 space-y-10 pb-20">
+
+<div className="max-w-4xl mx-auto w-full"><AdSlot code={settings.adTopCode} slot="Top Banner"/></div>
+
+{activeTab==='home'&&(
+<>
+<section className="hero-glow rounded-3xl p-10 sm:p-16 glass relative overflow-hidden">
+<div className="relative z-10">
+<p className="text-xs font-black tracking-[0.3em] text-yellow-400 mb-3">✦ PREMIUM LEARNING PLATFORM ✦</p>
+<h1 className="text-4xl sm:text-6xl font-black mb-5 leading-tight"><span className="bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 bg-clip-text text-transparent">🎓 Welcome,<br/>{studentUser?studentUser.name:'Admin'}</span></h1>
+<p className="text-lg opacity-90 mb-3 text-white/80">Class 6–12 के English + Hindi medium Notes और Quizzes।</p>
+<p className="text-base opacity-75 mb-8 text-yellow-200/80">📚 {notes.length} Notes • 🎯 {quizzes.length} Quizzes • 🚂 {railtest.length} Railtest Q&A</p>
+<div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<button onClick={()=>setActiveTab('notes')} className="btn-gold rounded-2xl py-4 text-base">📖 Notes</button>
+<button onClick={()=>setActiveTab('quiz')} className="btn-purple rounded-2xl py-4 text-base">🎯 Quiz</button>
+<button onClick={()=>setActiveTab('railtest')} className="btn-orange rounded-2xl py-4 text-base">🚂 Railtest</button>
+<button onClick={()=>setActiveTab('premium')} className="btn-gold rounded-2xl py-4 text-base">💎 Premium</button>
+</div>
+</div>
+</section>
+
+{announcements.length>0&&(
+<section className="space-y-3">
+<h2 className="text-2xl font-black text-center"><span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">📢 LATEST ANNOUNCEMENTS</span></h2>
+{announcements.slice(0,3).map(a=>(
+<div key={a.id} className={`rounded-2xl p-4 border-l-4 backdrop-blur-md ${annColor(a.type)}`}>
+<div className="flex items-start gap-3"><span className="text-2xl">{annIcon(a.type)}</span><div className="flex-1"><p className="text-sm text-white font-semibold">{a.text}</p><p className="text-xs opacity-50 mt-1">{a.date}</p></div></div>
+</div>))}
+</section>)}
+
+<section className="glass rounded-3xl p-8 sm:p-10">
+<h2 className="text-2xl sm:text-3xl font-black mb-8 text-center"><span className="bg-gradient-to-r from-yellow-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">📊 LIVE PROGRESS DASHBOARD</span></h2>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div className="glass-dark rounded-2xl p-6 border border-yellow-500/30"><h3 className="text-base font-black mb-4 text-center text-yellow-300">📖 पढ़ाई का Progress</h3><StudyCircleChart percent={studyPct} done={readNotes.length} total={notes.length}/></div>
+<div className="glass-dark rounded-2xl p-6 border border-purple-500/30"><h3 className="text-base font-black mb-4 text-center text-purple-300">🎯 Quiz Results</h3><QuizResultsChart history={quizHistory}/></div>
+</div>
+</section>
+
+<section>
+<h2 className="text-2xl font-black mb-6 text-center"><span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">📈 OVERALL STATUS</span></h2>
+<div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+{[{v:notes.length,l:'Total Notes',g:'from-yellow-500 to-orange-500'},{v:quizzes.length,l:'Total Quizzes',g:'from-purple-500 to-pink-500'},{v:railtest.length,l:'Railtest Q&A',g:'from-orange-500 to-red-500'},{v:notes.filter(n=>n.isPremium).length,l:'Premium',g:'from-cyan-500 to-blue-500'}].map((c,i)=>(
+<div key={i} className={`stat-card rounded-2xl p-6 bg-gradient-to-br ${c.g} text-white text-center shadow-2xl border border-white/20`}><p className="text-4xl sm:text-5xl font-black">{c.v}</p><p className="text-xs font-bold mt-2 tracking-wider uppercase">{c.l}</p></div>))}
+</div>
+</section>
+
+<section>
+<h2 className="text-2xl font-black mb-6 text-center"><span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">🎯 QUIZ PERFORMANCE</span></h2>
+<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div className="glass rounded-2xl p-6 text-center border border-blue-500/30"><p className="text-xs font-black uppercase text-blue-300 mb-2 tracking-widest">Total Attempts</p><p className="text-5xl font-black text-blue-400">{totalAttempts}</p></div>
+<div className="glass rounded-2xl p-6 text-center border border-amber-500/30"><p className="text-xs font-black uppercase text-amber-300 mb-2 tracking-widest">Average Score</p><p className="text-5xl font-black text-amber-400">{avgScore}%</p></div>
+<div className="glass rounded-2xl p-6 text-center border border-emerald-500/30"><p className="text-xs font-black uppercase text-emerald-300 mb-2 tracking-widest">Best Score</p><p className="text-5xl font-black text-emerald-400">{bestScore}%</p></div>
+</div>
+</section>
+
+<section className="glass rounded-3xl p-8">
+<div className="flex justify-between items-center mb-6 flex-wrap gap-3">
+<h2 className="text-2xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">🎁 Free Notes</h2>
+<button onClick={()=>{setNotesMedium('all');setNotesClass('all');setNotesSubject('all');setActiveTab('notes');}} className="btn-emerald px-4 py-2 rounded-xl text-sm">View All →</button>
+</div>
+{freeNotes.length===0?(<p className="text-center text-white/60 py-4">Koi free note nahi. Admin se add karwayein.</p>):(
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+{freeNotes.slice(0,3).map(note=>(<NoteCard key={note.id} note={note} onOpen={openNoteHandler} onToggle={toggleRead} isRead={readNotes.includes(note.id)} userPremium={user.isPremium} price={settings.price}/>))}
+</div>)}
+</section>
+
+<div className="max-w-4xl mx-auto w-full"><AdSlot code={settings.adMiddleCode} slot="Content Middle"/></div>
+
+<section className="glass rounded-3xl p-8">
+<h2 className="text-2xl font-black mb-6 bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">📚 Subject-wise Progress</h2>
+<div className="space-y-5">
+{subjectProgress.length===0?(<p className="text-center opacity-60 py-4 text-white/60">Abhi koi note read nahi kiya.</p>):(
+subjectProgress.map(sp=>(
+<div key={sp.subject}><div className="flex justify-between text-sm font-bold mb-2 text-white"><span>{sp.subject} ({sp.done}/{sp.total})</span><span className="text-purple-400">{sp.pct}%</span></div><div className="w-full h-3 bg-black/40 rounded-full overflow-hidden border border-white/10"><div className="h-full rounded-full transition-all" style={{width:`${sp.pct}%`,background:'linear-gradient(90deg,#a855f7,#ec4899,#ffd700)',boxShadow:'0 0 12px rgba(255,215,0,0.4)'}}/></div></div>)))}
+</div>
+</section>
+
+<section className="glass rounded-3xl p-8 border border-blue-500/20">
+<div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+<h2 className="text-2xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">📚 Quick Syllabus</h2>
+<button onClick={()=>setActiveTab('syllabus')} className="btn-cyan px-4 py-2 rounded-xl text-sm">View Full →</button>
+</div>
+<p className="text-sm text-white/70 mb-4">Class 6 से 12 तक के complete chapters एक जगह।</p>
+<div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+{SYLLABUS.map(s=>(
+<button key={s.class} onClick={()=>setActiveTab('syllabus')} className="p-3 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 hover:border-yellow-400 transition-all"><p className="text-lg font-black text-yellow-400">{s.class}</p><p className="text-[10px] text-white/60 font-bold">Class</p></button>))}
+</div>
+</section>
+
+<section className="glass rounded-3xl p-8 sm:p-10 text-center relative overflow-hidden">
+<div className="absolute inset-0 opacity-30" style={{background:'radial-gradient(circle at 50% 50%,rgba(255,215,0,0.4),transparent 70%)'}}/>
+<div className="relative"><p className="text-5xl mb-4">💡</p><h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">DAILY MOTIVATION</h2><p className="text-xl text-white/90 italic max-w-2xl mx-auto">"Success is the sum of small efforts, repeated day in and day out."</p><p className="text-sm text-yellow-400 mt-3 font-bold">— Robert Collier</p></div>
+</section>
+
+<section>
+<h2 className="text-2xl font-black mb-8 text-center"><span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">🌟 WHY CHOOSE EDUNOTES?</span></h2>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+{[{icon:'📖',title:'Bilingual Notes',desc:'English और हिन्दी दोनों medium'},{icon:'🎯',title:'Interactive Quizzes',desc:'खुद को test करें हर chapter के बाद'},{icon:'🚂',title:'Railtest Q&A',desc:'Railway exam prep — सवाल-जवाब'},{icon:'📊',title:'Progress Tracking',desc:'Circle + Bar graphs में पढ़ाई देखें'},{icon:'💎',title:'Premium Content',desc:'₹49/month में premium unlock'},{icon:'📱',title:'Mobile Friendly',desc:'हर device पर smooth experience'}].map((f,i)=>(
+<div key={i} className="card-premium rounded-2xl p-6 text-center"><p className="text-5xl mb-3">{f.icon}</p><h3 className="font-black text-base mb-2 bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent">{f.title}</h3><p className="text-sm text-white/70">{f.desc}</p></div>))}
+</div>
+</section>
+
+<section>
+<h2 className="text-2xl font-black mb-8 text-center"><span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">💬 WHAT STUDENTS SAY</span></h2>
+<div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+{[{name:'Priya S.',cls:'Class 10',text:'Bahut helpful notes hain! Hindi medium mein padhna asan ho gaya.',emoji:'👩‍🎓'},{name:'Rohit K.',cls:'Class 12',text:'Quiz feature amazing hai — real exam jaisa feel hota hai!',emoji:'👨‍🎓'},{name:'Anjali M.',cls:'Railway Aspirant',text:'Railtest section ne meri RRB preparation bahut easy kar di!',emoji:'🚂'}].map((t,i)=>(
+<div key={i} className="card-premium rounded-2xl p-6"><div className="flex items-center gap-3 mb-3"><span className="text-4xl">{t.emoji}</span><div><p className="font-bold text-white text-sm">{t.name}</p><p className="text-xs text-yellow-400">{t.cls}</p></div></div><p className="text-sm text-white/70 italic">"{t.text}"</p><div className="text-yellow-400 mt-2">⭐⭐⭐⭐⭐</div></div>))}
+</div>
+</section>
+
+<section className="glass rounded-3xl p-8">
+<h2 className="text-2xl font-black mb-6 text-center"><span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">📝 STUDY TIPS</span></h2>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+{[{icon:'⏰',title:'25-5 Pomodoro',desc:'25 min padho, 5 min break lo.'},{icon:'📝',title:'Notes Likho',desc:'Padhte waqt apne shabdon mein notes banayein.'},{icon:'🔁',title:'Revision Karo',desc:'Har chapter ko 3 baar revise karo.'},{icon:'💧',title:'Hydrated Raho',desc:'Paani peete raho, dimaag fresh rahega.'},{icon:'😴',title:'7-8 Ghante Neend',desc:'Proper sleep se memory strong hoti hai.'},{icon:'🧘',title:'Meditation',desc:'10 min daily dhyan — stress kam.'}].map((t,i)=>(
+<div key={i} className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all"><p className="text-3xl mb-2">{t.icon}</p><p className="font-bold text-white text-sm mb-1">{t.title}</p><p className="text-xs text-white/60">{t.desc}</p></div>))}
+</div>
+</section>
+
+{railtest.length>0&&(
+<section className="glass rounded-3xl p-8 border border-orange-500/30">
+<div className="flex justify-between items-center mb-6 flex-wrap gap-3">
+<h2 className="text-2xl font-black bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">🚂 Railtest — Q&A Preview</h2>
+<button onClick={()=>setActiveTab('railtest')} className="btn-orange px-4 py-2 rounded-xl text-sm">View All →</button>
+</div>
+<div className="space-y-3">
+{railtest.slice(0,3).map(r=>(
+<div key={r.id} className="p-4 rounded-xl bg-white/5 border border-white/10">
+<p className="text-xs text-orange-400 font-black mb-1">Q: {r.question}</p>
+<p className="text-sm text-white/70"><strong className="text-emerald-400">A:</strong> {r.answer||<span className="text-yellow-400 text-xs italic">Answer pending...</span>}</p>
+</div>))}
+</div>
+</section>)}
+
+<section className="rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden" style={{background:'linear-gradient(135deg,#a855f7 0%,#ec4899 50%,#ffd700 100%)'}}>
+<div className="absolute inset-0" style={{background:'radial-gradient(circle at 30% 50%,rgba(255,255,255,0.3),transparent 70%)'}}/>
+<div className="relative z-10"><h2 className="text-3xl sm:text-4xl font-black mb-4 text-white">🚀 Ready to Start Learning?</h2><p className="text-lg opacity-95 mb-7 text-white">अभी शुरू करें!</p><button onClick={()=>setActiveTab('notes')} className="bg-white text-purple-700 font-black px-8 py-4 rounded-2xl text-lg hover:scale-105 transition shadow-2xl">📖 Start Reading</button></div>
+</section>
+
+<section className="glass rounded-3xl p-8">
+<h2 className="text-2xl font-black mb-6 text-center bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">❓ FAQ</h2>
+<div>
+<details className="faq-item"><summary>Premium notes कैसे unlock करें?</summary><p>Premium tab → UPI से pay → UTR + screenshot upload → Payment verify होते ही notes unlock हो जाएंगे।</p></details>
+<details className="faq-item"><summary>क्या सारे Notes फ्री हैं?</summary><p>कुछ Notes पूरी तरह फ्री हैं। बाकी Premium Notes ₹49/month में Unlock करें।</p></details>
+<details className="faq-item"><summary>क्विज़ में अच्छे मार्क्स कैसे लाएँ?</summary><p>पहले Notes ध्यान से पढ़ें, फिर क्विज़ दें। 80%+ पर सरप्राइज़ मिलेगा!</p></details>
+<details className="faq-item"><summary>क्या मैं मोबाइल पर भी पढ़ सकता हूँ?</summary><p>बिल्कुल! हर डिवाइस पर बहुत अच्छे से काम करती है।</p></details>
+</div>
+</section>
+
+<section className="glass rounded-3xl p-8 text-center">
+<h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">📞 CONTACT</h2>
+<a href={`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent('Hello, mujhe EduNotes Premium ke baare mein help chahiye.')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 btn-emerald px-6 py-3 rounded-xl font-black text-white"><span>💬 WhatsApp Support</span></a>
+</section>
+</>)}
+
+{activeTab==='notes'&&(
+<>
+<section className="glass rounded-3xl p-6 sm:p-8">
+<h2 className="text-3xl font-black mb-6 bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">📖 Notes ({filteredNotes.length})</h2>
+<div className="mb-6"><input type="text" placeholder="🔍 Search notes by title..." value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} className={inputCls}/></div>
+<div className="space-y-3">
+<div className="flex flex-wrap items-center gap-2"><span className="font-black text-xs uppercase tracking-widest text-yellow-400">Medium:</span>{[{v:'all',l:'All'},{v:'en',l:'English'},{v:'hi',l:'हिन्दी'}].map(m=>(<button key={m.v} onClick={()=>setNotesMedium(m.v)} className={`px-4 py-2 rounded-xl text-xs font-black ${notesMedium===m.v?'btn-gold':'bg-white/5 border border-white/10 text-white/70 hover:border-yellow-400'}`}>{m.l}</button>))}</div>
+<div className="flex flex-wrap items-center gap-2"><span className="font-black text-xs uppercase tracking-widest text-yellow-400">Class:</span>{['all',...classesList].map(c=>(<button key={c} onClick={()=>setNotesClass(c)} className={`px-4 py-2 rounded-xl text-xs font-black ${notesClass===c?'btn-gold':'bg-white/5 border border-white/10 text-white/70 hover:border-yellow-400'}`}>{c==='all'?'All':`Class ${c}`}</button>))}</div>
+<div className="flex flex-wrap items-center gap-2"><span className="font-black text-xs uppercase tracking-widest text-yellow-400">Subject:</span>{['all',...subjectsList].map(s=>(<button key={s} onClick={()=>setNotesSubject(s)} className={`px-4 py-2 rounded-xl text-xs font-black ${notesSubject===s?'btn-gold':'bg-white/5 border border-white/10 text-white/70 hover:border-yellow-400'}`}>{s==='all'?'All':s}</button>))}</div>
+</div>
+</section>
+
+{filteredNotes.length===0?(<p className="glass rounded-2xl p-10 text-center text-white/70">Koi note nahi mila.</p>):(
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+{filteredNotes.map(note=>(<NoteCard key={note.id} note={note} onOpen={openNoteHandler} onToggle={toggleRead} isRead={readNotes.includes(note.id)} userPremium={user.isPremium} price={settings.price}/>))}
+</div>)}
+</>)}
+
+{activeTab==='quiz'&&(
+<>
+<section className="glass rounded-3xl p-6 sm:p-8">
+<h2 className="text-3xl font-black mb-6 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">🎯 Quiz ({filteredQuizzes.length})</h2>
+<div className="mb-6"><input type="text" placeholder="🔍 Search quizzes by title..." value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} className={inputCls}/></div>
+<div className="space-y-3">
+<div className="flex flex-wrap items-center gap-2"><span className="font-black text-xs uppercase tracking-widest text-emerald-400">Medium:</span>{[{v:'all',l:'All'},{v:'en',l:'English'},{v:'hi',l:'हिन्दी'}].map(m=>(<button key={m.v} onClick={()=>setQuizMedium(m.v)} className={`px-4 py-2 rounded-xl text-xs font-black ${quizMedium===m.v?'btn-emerald':'bg-white/5 border border-white/10 text-white/70 hover:border-emerald-400'}`}>{m.l}</button>))}</div>
+<div className="flex flex-wrap items-center gap-2"><span className="font-black text-xs uppercase tracking-widest text-emerald-400">Class:</span>{['all',...classesList].map(c=>(<button key={c} onClick={()=>setQuizClass(c)} className={`px-4 py-2 rounded-xl text-xs font-black ${quizClass===c?'btn-emerald':'bg-white/5 border border-white/10 text-white/70 hover:border-emerald-400'}`}>{c==='all'?'All':`Class ${c}`}</button>))}</div>
+</div>
+</section>
+
+{filteredQuizzes.length===0?(<p className="glass rounded-2xl p-10 text-center text-white/70">Koi quiz nahi mili.</p>):(
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+{filteredQuizzes.map(q=>(<QuizCard key={q.id} quiz={q} onStart={startQuiz}/>))}
+</div>)}
+</>)}
+
+{activeTab==='syllabus'&&(
+<>
+<section className="glass rounded-3xl p-8 border border-blue-500/30">
+<div className="text-center mb-8">
+<p className="text-5xl mb-3">📚</p>
+<h2 className="text-3xl font-black mb-2 bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">CLASS 6–12 SYLLABUS</h2>
+<p className="text-sm text-yellow-400 font-bold">NCERT + CBSE • Science • Maths</p>
+<p className="text-xs text-white/60 mt-1">Complete chapter-wise syllabus for all classes</p>
+</div>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+{SYLLABUS.map(s=>(
+<div key={s.class} className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/60 transition-all">
+<div className="flex items-center justify-between mb-3 border-b border-white/10 pb-2">
+<h3 className="text-lg font-black text-yellow-400">Class {s.class}</h3>
+<span className="text-[10px] font-black bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full">{s.chapters.length} Chapters</span>
+</div>
+<ul className="space-y-2 max-h-64 overflow-y-auto pr-1">
+{s.chapters.map((c,i)=>(<li key={i} className="text-sm text-white/80 flex items-start gap-2"><span className="text-cyan-400 mt-1 flex-shrink-0">▸</span><span>{c}</span></li>))}
+</ul>
+</div>))}
+</div>
+</section>
+<section className="glass rounded-3xl p-8 border border-yellow-500/20 text-center">
+<div className="p-4 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-purple-500/10 border border-yellow-500/30">
+<p className="text-sm text-white/80 mb-2">📌 <strong className="text-yellow-400">Tip:</strong> हर chapter पूरा करने के बाद उसका Quiz ज़रूर दें!</p>
+<button onClick={()=>setActiveTab('quiz')} className="btn-purple px-6 py-2.5 rounded-xl text-sm mt-2">🎯 Quiz दें →</button>
+</div>
+</section>
+</>)}
+
+{activeTab==='railtest'&&(
+<>
+<section className="glass rounded-3xl p-8 border border-orange-500/30">
+<div className="text-center"><p className="text-5xl mb-3">🚂</p><h2 className="text-3xl font-black mb-2 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">RAILTEST Q&A</h2><p className="text-xs text-yellow-400">Total: {railtest.length} • Click karke answer dekhein</p></div>
+</section>
+{railtest.length===0?(<p className="glass rounded-2xl p-10 text-center text-white/70">Koi Q&A nahi.</p>):(
+<div className="space-y-3">
+{railtest.map(r=>(
+<div key={r.id} className="glass rounded-2xl overflow-hidden border border-orange-500/20 hover:border-orange-400/50">
+<button onClick={()=>setOpenRailId(openRailId===r.id?null:r.id)} className="w-full p-4 flex items-start gap-3 text-left">
+<div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center font-black text-sm">Q</div>
+<div className="flex-1"><p className="font-bold text-white text-sm">{r.question}</p><p className="text-xs text-orange-400 mt-1">📁 {r.category}</p></div>
+<div className="text-2xl text-yellow-400" style={{transform:openRailId===r.id?'rotate(180deg)':'rotate(0deg)'}}>▼</div>
+</button>
+<div className={`railtest-answer ${openRailId===r.id?'open':''}`}>
+<div className="flex items-start gap-3 pt-3 border-t border-white/10">
+<div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center font-black text-sm">A</div>
+<p className="flex-1 text-white/85 text-sm">{r.answer||<span className="text-yellow-400 italic">Answer pending...</span>}</p>
+</div>
+</div>
+</div>))}
+</div>)}
+</>)}
+
+{activeTab==='premium'&&(
+<section className="glass rounded-3xl p-8 max-w-2xl mx-auto">
+<h2 className="text-3xl font-black mb-2 bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent text-center">💎 PREMIUM – ₹{settings.price}/Month</h2>
+{settings.qrCode?(
+  <div className="p-5 rounded-2xl bg-white border-2 border-yellow-400 mb-6 text-center">
+    <a href={`upi://pay?pa=${encodeURIComponent(settings.upiId)}&pn=${encodeURIComponent(settings.upiName)}&am=${settings.price}&cu=INR&tn=${encodeURIComponent('EduNotes Premium Subscription')}`} className="inline-block">
+      <img src={settings.qrCode} alt="QR - Tap to Pay" className="mx-auto h-64 w-64 object-contain rounded-xl cursor-pointer hover:scale-105 transition-transform"/>
+    </a>
+    <p className="text-sm mt-3 font-black text-slate-800">📱 QR pe click karein — PhonePe / GPay / Paytm / BHIM khulega</p>
+    <p className="text-xs mt-1 text-slate-600 font-semibold">Ya QR scan karke ₹{settings.price} pay karein</p>
+    <a href={`upi://pay?pa=${encodeURIComponent(settings.upiId)}&pn=${encodeURIComponent(settings.upiName)}&am=${settings.price}&cu=INR&tn=${encodeURIComponent('EduNotes Premium Subscription')}`} className="btn-gold inline-block mt-3 px-6 py-2.5 rounded-xl text-sm">💳 Pay ₹{settings.price} via UPI App</a>
+  </div>
+):(
+  <div className="p-5 rounded-2xl bg-white/5 border border-white/10 mb-6 text-center">
+    <p className="text-xs opacity-60 text-white/70 mb-3">QR code admin upload nahi kiya</p>
+    <a href={`upi://pay?pa=${encodeURIComponent(settings.upiId)}&pn=${encodeURIComponent(settings.upiName)}&am=${settings.price}&cu=INR&tn=${encodeURIComponent('EduNotes Premium Subscription')}`} className="btn-gold inline-block px-6 py-2.5 rounded-xl text-sm">💳 Pay ₹{settings.price} via UPI App</a>
+  </div>
+)}
+<div className="p-5 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-purple-500/10 border border-yellow-500/30 mb-6 text-sm space-y-2 text-white"><p><strong className="text-yellow-400">UPI ID:</strong> {settings.upiId}</p><p><strong className="text-yellow-400">Name:</strong> {settings.upiName}</p><p><strong className="text-yellow-400">Amount:</strong> ₹{settings.price}</p></div>
+{user.isPremium?(<div className="p-6 rounded-2xl bg-emerald-500/15 border-2 border-emerald-400 text-center font-black text-emerald-300 text-lg">✅ PREMIUM ACTIVE!</div>):(
+<form onSubmit={handlePaymentSubmit} className="space-y-5">
+<div><label className="block text-sm font-black mb-2 text-yellow-400">1. 12-Digit UTR *</label><input type="text" maxLength={12} value={utrInput} onChange={e=>setUtrInput(e.target.value.replace(/\D/g,''))} className={inputCls} placeholder="Enter 12-digit UTR"/></div>
+<div><label className="block text-sm font-black mb-2 text-yellow-400">2. Screenshot *</label><input type="file" accept="image/*" onChange={handleScreenshotChange} className="w-full p-3 rounded-xl border border-white/20 bg-black/30 text-white text-sm"/>{screenshotPreview&&<img src={screenshotPreview} className="mt-3 h-40 rounded-xl border-2 border-emerald-400" alt="preview"/>}</div>
+<button type="submit" disabled={!screenshotPreview||utrInput.length<12} className={`w-full py-4 rounded-xl font-black text-base ${(!screenshotPreview||utrInput.length<12)?'bg-white/10 text-white/40 cursor-not-allowed':'btn-gold'}`}>🚀 Submit Payment</button>
+</form>)}
+</section>)}
+
+{activeTab==='admin'&&!adminUser&&(
+<section className="glass rounded-3xl p-8 max-w-md mx-auto">
+<h2 className="text-2xl font-black mb-4 text-center text-yellow-400">🔐 ADMIN LOGIN</h2>
+<p className="text-xs text-white/60 text-center mb-4">Enter Admin Email & Password</p>
+<form onSubmit={handleAdminLogin} className="space-y-4">
+<input type="email" value={adminEmail} onChange={e=>setAdminEmail(e.target.value)} placeholder="Admin Email" className={inputCls} required/>
+<input type="password" value={adminLoginPass} onChange={e=>setAdminLoginPass(e.target.value)} placeholder="Admin Password" className={inputCls} required/>
+<button type="submit" className="btn-purple w-full py-3 rounded-xl">🔓 Login</button>
+</form>
+</section>)}
+
+{activeTab==='admin'&&adminUser&&(
+<div className="space-y-6">
+<div className="flex justify-between items-center flex-wrap gap-2">
+<h2 className="text-2xl font-black bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">⚙️ ADMIN PANEL</h2>
+<div className="flex gap-2 items-center flex-wrap">
+<span className="px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-xs font-bold text-emerald-400">👤 {adminUser.email}</span>
+<button onClick={handleAdminLogout} className="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-black">🔒 Logout</button>
+</div>
+</div>
+
+{notes.length===0&&quizzes.length===0&&(
+<div className="glass rounded-2xl p-6 border border-yellow-500/40">
+<h3 className="text-lg font-black mb-2 text-yellow-400">🎁 पहली बार? Sample Data Load करें</h3>
+<p className="text-sm text-white/70 mb-4">Database खाली है। एक click में sample notes + quizzes load करें।</p>
+<button onClick={seedInitialData} className="btn-gold px-6 py-3 rounded-xl">📥 Load Sample Data</button>
+</div>)}
+
+<div className="glass rounded-2xl p-2 flex flex-wrap gap-2">
+{[{id:'settings',label:'💰 Settings'},{id:'students',label:'👨‍🎓 Students'},{id:'announcements',label:'📢 Announcements'},{id:'notes',label:'📖 Notes'},{id:'quizzes',label:'🎯 Quizzes'},{id:'railtest',label:'🚂 Railtest'},{id:'payments',label:'📸 Payments'}].map(t=>(
+<button key={t.id} onClick={()=>setAdminTab(t.id)} className={`px-3 py-2.5 rounded-xl text-xs sm:text-sm font-black ${adminTab===t.id?'admin-tab-active':'bg-white/5 border border-white/10 text-white/70 hover:border-yellow-400'}`}>{t.label}</button>))}
+</div>
+
+{adminTab==='students'&&(
+<section className="glass rounded-2xl p-6 border border-cyan-500/30">
+<h3 className="text-xl font-black mb-5 text-cyan-400">👨‍🎓 Logged-in Students ({studentsList.length})</h3>
+<div className="overflow-x-auto">
+<table className="w-full text-left text-sm">
+<thead><tr className="border-b border-cyan-500/30">
+<th className="p-2 text-cyan-400 text-xs">Name</th><th className="p-2 text-cyan-400 text-xs">Mobile</th><th className="p-2 text-cyan-400 text-xs">Last Login</th>
+</tr></thead>
+<tbody>
+{studentsList.map(s=>(
+<tr key={s.id} className="border-b border-white/5">
+<td className="p-2 font-bold text-white">{s.name}</td>
+<td className="p-2 font-mono text-emerald-400">{s.mobile}</td>
+<td className="p-2 text-xs text-white/60">{new Date(s.lastLogin).toLocaleString('en-IN')}</td>
+</tr>))}
+{studentsList.length===0&&(<tr><td colSpan="3" className="p-6 text-center text-white/50">Abhi tak koi student login nahi kiya.</td></tr>)}
+</tbody>
+</table>
+</div>
+</section>)}
+
+{adminTab==='settings'&&(
+<section className="glass rounded-2xl p-6 border border-cyan-500/30">
+<h3 className="text-xl font-black mb-5 text-cyan-400">💰 Payment Settings</h3>
+<form onSubmit={saveSettings} className="space-y-4 text-sm">
+<div><label className="font-black block mb-2 text-cyan-400 text-xs">UPI ID</label><input type="text" value={settingsForm.upiId} onChange={e=>setSettingsForm({...settingsForm,upiId:e.target.value})} className={inputCls}/></div>
+<div><label className="font-black block mb-2 text-cyan-400 text-xs">UPI Name</label><input type="text" value={settingsForm.upiName} onChange={e=>setSettingsForm({...settingsForm,upiName:e.target.value})} className={inputCls}/></div>
+<div><label className="font-black block mb-2 text-cyan-400 text-xs">Price (₹)</label><input type="number" value={settingsForm.price} onChange={e=>setSettingsForm({...settingsForm,price:e.target.value})} className={inputCls}/></div>
+<div><label className="font-black block mb-2 text-cyan-400 text-xs">WhatsApp</label><input type="text" value={settingsForm.whatsappNumber} onChange={e=>setSettingsForm({...settingsForm,whatsappNumber:e.target.value.replace(/\D/g,'')})} className={inputCls}/></div>
+<div><label className="font-black block mb-2 text-cyan-400 text-xs">QR Code</label><input type="file" accept="image/*" onChange={handleQrUpload} className="w-full p-3 rounded-xl border border-white/20 bg-black/30 text-white text-sm"/>
+{settingsForm.qrCode&&(<div className="mt-3 flex items-center gap-3"><img src={settingsForm.qrCode} className="h-32 w-32 rounded-xl border-2 border-emerald-400" alt="qr"/><button type="button" onClick={()=>setSettingsForm({...settingsForm,qrCode:''})} className="px-3 py-2 bg-rose-500 text-white rounded-lg text-xs font-black">Remove</button></div>)}
+</div>
+
+<div className="border-t border-yellow-500/30 pt-5 mt-5">
+<h4 className="font-black text-yellow-400 text-sm mb-3">📢 ADS CONFIGURATION</h4>
+<p className="text-[11px] text-white/60 mb-3 leading-relaxed">AdSense / Adsterra का code यहाँ paste करें। खाली छोड़ने पर placeholder दिखेगा।</p>
+<div className="space-y-3">
+<div><label className="font-black block mb-1 text-cyan-400 text-xs">🔝 Top Ad Code (Header के नीचे)</label><textarea value={settingsForm.adTopCode} onChange={e=>setSettingsForm({...settingsForm,adTopCode:e.target.value})} rows={3} className={miniCls} placeholder='<ins class="adsbygoogle" data-ad-client="ca-pub-XXXX" data-ad-slot="123"></ins>'></textarea></div>
+<div><label className="font-black block mb-1 text-cyan-400 text-xs">📄 Middle Ad Code (Content बीच में)</label><textarea value={settingsForm.adMiddleCode} onChange={e=>setSettingsForm({...settingsForm,adMiddleCode:e.target.value})} rows={3} className={miniCls} placeholder="Ad code paste करें"></textarea></div>
+<div><label className="font-black block mb-1 text-cyan-400 text-xs">🔻 Bottom Ad Code (Footer के ऊपर)</label><textarea value={settingsForm.adBottomCode} onChange={e=>setSettingsForm({...settingsForm,adBottomCode:e.target.value})} rows={3} className={miniCls} placeholder="Ad code paste करें"></textarea></div>
+</div>
+</div>
+
+<button type="submit" className="btn-cyan w-full py-3 rounded-xl">💾 Save All Settings</button>
+{settingsSaved&&<p className="text-center text-emerald-400 font-black text-xs">✅ Saved!</p>}
+</form>
+</section>)}
+
+{adminTab==='announcements'&&(
+<section className="glass rounded-2xl p-6 border border-yellow-500/30">
+<h3 className="text-xl font-black mb-5 text-yellow-400">📢 Announcements ({announcements.length})</h3>
+<div className="p-4 rounded-2xl bg-black/30 border border-yellow-500/30 mb-5 space-y-3">
+<textarea placeholder="Announcement text..." value={newAnnouncement.text} onChange={e=>setNewAnnouncement({...newAnnouncement,text:e.target.value})} rows={3} className={miniCls}></textarea>
+<select value={newAnnouncement.type} onChange={e=>setNewAnnouncement({...newAnnouncement,type:e.target.value})} className={miniCls}>
+<option value="info" className="bg-slate-800">ℹ️ Info</option><option value="success" className="bg-slate-800">✅ Success</option><option value="important" className="bg-slate-800">📢 Important</option><option value="warning" className="bg-slate-800">⚠️ Warning</option>
+</select>
+<button onClick={saveAnnouncement} className="btn-gold w-full py-2.5 rounded-xl text-sm">✅ Post (Sabko dikhega)</button>
+</div>
+<div className="space-y-2 max-h-96 overflow-y-auto">
+{announcements.map(a=>(
+<div key={a.id} className={`flex items-center justify-between gap-3 p-3 rounded-xl border-l-4 ${annColor(a.type)}`}>
+<div className="flex-1 min-w-0"><p className="text-sm font-bold text-white">{a.text}</p><p className="text-xs text-white/50 mt-1">{a.date}</p></div>
+<button onClick={()=>deleteAnnouncement(a.id)} className="px-3 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-black">🗑️</button>
+</div>))}
+</div>
+</section>)}
+
+{adminTab==='notes'&&(
+<section className="glass rounded-2xl p-6 border border-yellow-500/30">
+<div className="flex justify-between items-center flex-wrap gap-3 mb-5">
+<h3 className="text-xl font-black text-yellow-400">📖 Notes ({notes.length})</h3>
+<button onClick={()=>setShowNoteForm(!showNoteForm)} className={`px-5 py-2.5 rounded-xl font-black text-sm ${showNoteForm?'bg-rose-600 text-white':'btn-gold'}`}>{showNoteForm?'✕ Cancel':'➕ Add Note'}</button>
+</div>
+{showNoteForm&&(
+<div className="p-5 rounded-2xl bg-black/30 border border-yellow-500/30 mb-5 space-y-4">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<input type="text" placeholder="Title *" value={newNote.title} onChange={e=>setNewNote({...newNote,title:e.target.value})} className={miniCls}/>
+<select value={newNote.classLevel} onChange={e=>setNewNote({...newNote,classLevel:e.target.value})} className={miniCls}>{classesList.map(c=><option key={c} value={c} className="bg-slate-800">Class {c}</option>)}</select>
+<select value={newNote.subject} onChange={e=>setNewNote({...newNote,subject:e.target.value})} className={miniCls}>{subjectsList.map(s=><option key={s} value={s} className="bg-slate-800">{s}</option>)}</select>
+<select value={newNote.medium} onChange={e=>setNewNote({...newNote,medium:e.target.value})} className={miniCls}><option value="en" className="bg-slate-800">English</option><option value="hi" className="bg-slate-800">हिन्दी</option></select>
+</div>
+<label className="flex items-center gap-2 text-sm font-bold text-white/80 cursor-pointer"><input type="checkbox" checked={newNote.isPremium} onChange={e=>setNewNote({...newNote,isPremium:e.target.checked})} className="w-4 h-4 accent-yellow-400"/>Mark as Premium 🔒</label>
+<div className="border-t border-white/10 pt-4">
+<div className="flex justify-between items-center mb-3"><h5 className="font-black text-white text-sm">Pages ({newNote.pages.length})</h5><button onClick={addPage} className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-black">➕ Page</button></div>
+<div className="space-y-3 max-h-96 overflow-y-auto">
+{newNote.pages.map((pg,idx)=>(
+<div key={idx} className="p-3 rounded-xl bg-white/5 border border-white/10">
+<div className="flex justify-between items-center mb-2"><span className="text-xs font-black text-yellow-400">Page {idx+1}</span>{newNote.pages.length>1&&<button onClick={()=>removePage(idx)} className="text-xs text-rose-400 font-black">🗑️</button>}</div>
+<input type="text" placeholder="Heading" value={pg.heading} onChange={e=>updatePage(idx,'heading',e.target.value)} className={miniCls+' mb-2'}/>
+<textarea placeholder="Body (HTML allowed)" value={pg.body} onChange={e=>updatePage(idx,'body',e.target.value)} rows={4} className={miniCls}></textarea>
+</div>))}
+</div>
+</div>
+<button onClick={saveNewNote} className="btn-emerald w-full py-3 rounded-xl">✅ Save Note</button>
+</div>)}
+<div className="space-y-2 max-h-96 overflow-y-auto">
+{notes.map(n=>(
+<div key={n.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+<div className="flex-1 min-w-0"><p className="text-sm font-bold text-white truncate">{n.title}</p><p className="text-xs text-white/50">Class {n.classLevel} • {n.subject} • {n.pages?.length||0}p • {n.isPremium?'🔒':'✅'}</p></div>
+<button onClick={()=>deleteNote(n.id,n.title)} className="px-3 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-black">🗑️</button>
+</div>))}
+</div>
+</section>)}
+
+{adminTab==='quizzes'&&(
+<section className="glass rounded-2xl p-6 border border-emerald-500/30">
+<div className="flex justify-between items-center flex-wrap gap-3 mb-5">
+<h3 className="text-xl font-black text-emerald-400">🎯 Quizzes ({quizzes.length})</h3>
+<button onClick={()=>setShowQuizForm(!showQuizForm)} className={`px-5 py-2.5 rounded-xl font-black text-sm ${showQuizForm?'bg-rose-600 text-white':'btn-emerald'}`}>{showQuizForm?'✕ Cancel':'➕ Add Quiz'}</button>
+</div>
+{showQuizForm&&(
+<div className="p-5 rounded-2xl bg-black/30 border border-emerald-500/30 mb-5 space-y-4">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<input type="text" placeholder="Title *" value={newQuiz.title} onChange={e=>setNewQuiz({...newQuiz,title:e.target.value})} className={miniCls}/>
+<select value={newQuiz.classLevel} onChange={e=>setNewQuiz({...newQuiz,classLevel:e.target.value})} className={miniCls}>{classesList.map(c=><option key={c} value={c} className="bg-slate-800">Class {c}</option>)}</select>
+<select value={newQuiz.subject} onChange={e=>setNewQuiz({...newQuiz,subject:e.target.value})} className={miniCls}>{subjectsList.map(s=><option key={s} value={s} className="bg-slate-800">{s}</option>)}</select>
+<select value={newQuiz.medium} onChange={e=>setNewQuiz({...newQuiz,medium:e.target.value})} className={miniCls}><option value="en" className="bg-slate-800">English</option><option value="hi" className="bg-slate-800">हिन्दी</option></select>
+</div>
+<div className="border-t border-white/10 pt-4">
+<div className="flex justify-between items-center mb-3"><h5 className="font-black text-white text-sm">Questions ({newQuiz.questions.length})</h5><button onClick={addQuestion} className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-black">➕ Q</button></div>
+<div className="space-y-4 max-h-[500px] overflow-y-auto">
+{newQuiz.questions.map((q,idx)=>(
+<div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10">
+<div className="flex justify-between items-center mb-3"><span className="text-xs font-black text-emerald-400">Q{idx+1}</span>{newQuiz.questions.length>1&&<button onClick={()=>removeQuestion(idx)} className="text-xs text-rose-400 font-black">🗑️</button>}</div>
+<input type="text" placeholder="Question *" value={q.q} onChange={e=>updateQuestion(idx,'q',e.target.value)} className={miniCls+' mb-2'}/>
+<p className="text-xs font-bold text-white/60 mb-2">Options (सही चुनें):</p>
+{q.options.map((opt,oi)=>(
+<label key={oi} className="flex items-center gap-2 mb-2">
+<input type="radio" name={`correct_${idx}`} checked={q.correct===oi} onChange={()=>updateQuestion(idx,'correct',oi)} className="w-4 h-4 accent-yellow-400"/>
+<span className="text-xs font-black text-white/60 w-4">{String.fromCharCode(65+oi)}.</span>
+<input type="text" placeholder={`Option ${String.fromCharCode(65+oi)}`} value={opt} onChange={e=>updateOption(idx,oi,e.target.value)} className={miniCls}/>
+</label>))}
+</div>))}
+</div>
+</div>
+<button onClick={saveNewQuiz} className="btn-purple w-full py-3 rounded-xl">✅ Save Quiz</button>
+</div>)}
+<div className="space-y-2 max-h-96 overflow-y-auto">
+{quizzes.map(q=>(
+<div key={q.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+<div className="flex-1 min-w-0"><p className="text-sm font-bold text-white truncate">{q.title}</p><p className="text-xs text-white/50">Class {q.classLevel} • {q.subject} • {q.questions?.length||0}q</p></div>
+<button onClick={()=>deleteQuiz(q.id,q.title)} className="px-3 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-black">🗑️</button>
+</div>))}
+</div>
+</section>)}
+
+{adminTab==='railtest'&&(
+<section className="glass rounded-2xl p-6 border border-orange-500/30">
+<h3 className="text-xl font-black mb-5 text-orange-400">🚂 Railtest Questions ({railtest.length})</h3>
+<div className="p-4 rounded-2xl bg-black/30 border border-orange-500/30 mb-5 space-y-3">
+<h4 className="font-black text-white text-sm">➕ Add New Question</h4>
+<textarea placeholder="Question *" value={newRailtest.question} onChange={e=>setNewRailtest({...newRailtest,question:e.target.value})} rows={2} className={miniCls}></textarea>
+<input type="text" placeholder="Category (e.g. General, Science)" value={newRailtest.category} onChange={e=>setNewRailtest({...newRailtest,category:e.target.value})} className={miniCls}/>
+<button onClick={saveRailtestQuestion} className="btn-orange w-full py-2.5 rounded-xl text-sm">✅ Add Question</button>
+</div>
+<div className="space-y-2 max-h-[600px] overflow-y-auto">
+{railtest.map(r=>(
+<div key={r.id} className="flex flex-col gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
+<div className="flex items-start justify-between gap-3">
+<div className="flex-1 min-w-0"><p className="text-sm font-bold text-white">Q: {r.question}</p><p className="text-xs text-orange-400 mt-1">📁 {r.category}</p></div>
+<button onClick={()=>deleteRailtest(r.id)} className="px-3 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-black">🗑️</button>
+</div>
+<div className="flex items-center gap-2 bg-black/30 p-2 rounded-lg">
+<p className="flex-1 text-sm text-emerald-400">A: {r.answer||<span className="text-yellow-400 text-xs italic">Answer Pending...</span>}</p>
+{!r.answer?(<button onClick={()=>addRailtestAnswer(r.id)} className="px-3 py-1.5 bg-cyan-600 text-white rounded-lg text-xs font-black">➕ Add Answer</button>):(<button onClick={()=>addRailtestAnswer(r.id)} className="px-3 py-1.5 bg-slate-600 text-white rounded-lg text-xs font-black">✏️ Edit</button>)}
+</div>
+</div>))}
+</div>
+</section>)}
+
+{adminTab==='payments'&&(
+<section className="glass rounded-2xl p-6">
+<h3 className="text-xl font-black mb-5 text-yellow-400">📸 Payments ({payments.length})</h3>
+<div className="overflow-x-auto">
+<table className="w-full text-left text-sm">
+<thead><tr className="border-b border-yellow-500/30">
+<th className="p-2 text-yellow-400 text-xs">Student</th><th className="p-2 text-yellow-400 text-xs">Mobile</th><th className="p-2 text-yellow-400 text-xs">UTR</th><th className="p-2 text-yellow-400 text-xs">Proof</th><th className="p-2 text-yellow-400 text-xs">Status</th><th className="p-2 text-yellow-400 text-xs">Action</th>
+</tr></thead>
+<tbody>
+{payments.map(p=>(
+<tr key={p.id} className="border-b border-white/5">
+<td className="p-2 font-bold text-white">{p.studentName}</td>
+<td className="p-2 font-mono text-cyan-400">{p.username}</td>
+<td className="p-2 font-mono font-bold text-yellow-400">{p.utr}</td>
+<td className="p-2"><img src={p.screenshot} onClick={()=>setZoomImage(p.screenshot)} className="h-14 w-14 object-cover rounded-lg border-2 border-yellow-400/50 cursor-pointer" alt="proof"/></td>
+<td className="p-2"><span className={`px-2 py-0.5 rounded-full text-xs font-black uppercase ${p.status==='approved'?'bg-emerald-500/20 text-emerald-400':p.status==='rejected'?'bg-rose-500/20 text-rose-400':'bg-amber-500/20 text-amber-400'}`}>{p.status}</span></td>
+<td className="p-2"><div className="flex gap-2 flex-wrap">
+{p.status==='pending'&&(<>
+<button onClick={()=>verifyPayment(p.id,'approved')} className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-black">✅</button>
+<button onClick={()=>verifyPayment(p.id,'rejected')} className="px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-black">❌</button>
+</>)}
+<button onClick={()=>deletePayment(p.id)} className="px-3 py-1 bg-red-700 text-white rounded-lg text-xs font-black">🗑️</button>
+</div></td>
+</tr>))}
+{payments.length===0&&(<tr><td colSpan="6" className="p-6 text-center text-white/50">Koi payment nahi.</td></tr>)}
+</tbody>
+</table>
+</div>
+</section>)}
+</div>)}
+
+<div className="max-w-4xl mx-auto w-full"><AdSlot code={settings.adBottomCode} slot="Bottom Banner"/></div>
+
+</main>
+
+{openNote&&(
+<div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-md">
+<div className="w-full max-w-3xl max-h-[92vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col" style={{background:'linear-gradient(135deg,rgba(20,10,40,0.98),rgba(10,5,25,0.98))',border:'2px solid rgba(255,215,0,0.3)'}}>
+<div className="bg-gradient-to-r from-yellow-500 via-pink-500 to-purple-600 text-white p-4 flex justify-between items-center"><div><h3 className="font-black text-base">{openNote.title}</h3><p className="text-xs opacity-90">Class {openNote.classLevel} • {openNote.subject}</p></div><button onClick={()=>setOpenNote(null)} className="p-2 rounded-lg bg-black/30 text-lg">✕</button></div>
+<div className="p-5 overflow-y-auto page-body flex-1 text-sm"><h3 className="text-lg font-black mb-3 text-yellow-400">{openNote.pages[openPage].heading}</h3><div dangerouslySetInnerHTML={{__html:openNote.pages[openPage].body}}/></div>
+<div className="p-4 border-t border-yellow-500/20 space-y-2">
+<button onClick={()=>toggleRead(openNote.id)} className={`w-full py-2.5 rounded-xl font-black text-sm ${readNotes.includes(openNote.id)?'bg-emerald-500 text-white':'bg-white/10 text-white/70 border-2 border-white/20'}`}>{readNotes.includes(openNote.id)?'✅ Marked as Read':'⬜ Mark as Read'}</button>
+<div className="flex justify-between items-center gap-2">
+<button onClick={()=>setOpenPage(Math.max(0,openPage-1))} disabled={openPage===0} className="px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-sm disabled:opacity-30">← Prev</button>
+<span className="text-sm font-bold text-yellow-400">Page {openPage+1} / {openNote.pages.length}</span>
+<button onClick={()=>setOpenPage(Math.min(openNote.pages.length-1,openPage+1))} disabled={openPage===openNote.pages.length-1} className="btn-gold px-4 py-2 rounded-xl text-sm disabled:opacity-30">Next →</button>
+</div>
+</div>
+</div>
+</div>)}
+
+{activeQuiz&&(
+<div className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-2 sm:p-4 backdrop-blur-md">
+<div className="w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl shadow-2xl" style={{background:'linear-gradient(135deg,rgba(20,10,40,0.98),rgba(10,5,25,0.98))',border:'2px solid rgba(16,185,129,0.4)'}}>
+<div className="sticky top-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white p-4 flex justify-between items-center rounded-t-3xl z-10"><div><h3 className="font-black text-base">{activeQuiz.title}</h3><p className="text-xs opacity-90">{activeQuiz.questions.length} Questions</p></div><button onClick={closeQuiz} className="p-2 rounded-lg bg-black/30 text-lg">✕</button></div>
+<div className="p-5 space-y-4">
+{activeQuiz.questions.map((q,i)=>{
+const chosen=quizAnswers[i];const correct=q.correct;
+return(
+<div key={i} className={`p-4 rounded-2xl border-2 ${quizSubmitted?(chosen===correct?'border-emerald-500 bg-emerald-500/10':'border-rose-500 bg-rose-500/10'):'border-white/15 bg-white/5'}`}>
+<p className="font-bold mb-3 text-white">Q{i+1}. {q.q}</p>
+<div className="space-y-2">
+{q.options.map((opt,idx)=>(
+<label key={idx} className={`flex items-center gap-2 p-2.5 rounded-xl cursor-pointer text-sm ${quizSubmitted&&idx===correct?'bg-emerald-500/20 font-bold border border-emerald-500':'hover:bg-white/10 text-white/80 border border-transparent'}`}>
+<input type="radio" name={`q${i}`} disabled={quizSubmitted} checked={chosen===idx} onChange={()=>setQuizAnswers({...quizAnswers,[i]:idx})} className="accent-yellow-400"/>
+<span>{String.fromCharCode(65+idx)}. {opt}</span>
+{quizSubmitted&&idx===correct&&<span className="ml-auto text-emerald-400 font-black">✓</span>}
+{quizSubmitted&&chosen===idx&&idx!==correct&&<span className="ml-auto text-rose-400 font-black">✗</span>}
+</label>))}
+</div>
+</div>);})}
+</div>
+<div className="p-5 border-t border-emerald-500/20">
+{!quizSubmitted?(
+<button onClick={submitQuiz} disabled={Object.keys(quizAnswers).length<activeQuiz.questions.length} className={`w-full py-3 rounded-xl font-black text-white ${Object.keys(quizAnswers).length<activeQuiz.questions.length?'bg-white/10 text-white/40 cursor-not-allowed':'btn-emerald'}`}>✅ Submit</button>
+):(
+<div className="text-center">
+<p className="text-3xl font-black mb-3 text-white">🎉 Score: <span className="text-yellow-400">{quizScore}</span> / {activeQuiz.questions.length}</p>
+<button onClick={closeQuiz} className="btn-purple w-full py-3 rounded-xl">Close</button>
+</div>)}
+</div>
+</div>
+</div>)}
+
+{zoomImage&&(
+<div onClick={()=>setZoomImage(null)} className="fixed inset-0 bg-black/90 flex items-center justify-center z-[60] p-4 cursor-zoom-out">
+<img src={zoomImage} className="max-h-[85vh] rounded-2xl border-4 border-yellow-400" alt="zoom"/>
+</div>)}
+
+<a href={`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent('Hello, mujhe EduNotes Premium ke baare mein help chahiye.')}`} target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 z-40 flex items-center gap-2 text-white font-black px-5 py-3.5 rounded-full shadow-2xl hover:scale-110 transition-transform" style={{background:'linear-gradient(135deg,#25d366,#128c7e)'}}>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+<span className="hidden sm:inline text-sm">Support</span>
+</a>
+
+<footer className="text-center py-10 px-4">
+<div className="max-w-2xl mx-auto rounded-2xl py-6 px-6 border-2 border-yellow-500/40 relative overflow-hidden" style={{background:'linear-gradient(135deg,rgba(20,10,40,0.9),rgba(10,5,25,0.9))'}}>
+<div className="relative"><p className="mb-3 text-sm text-white/60">© {new Date().getFullYear()} EduNotes Premium</p><div className="h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent my-3"/><p className="font-black text-sm tracking-[0.15em] rainbow-text">DEVELOPED BY : ABHISHEK KUMAR YADAV</p></div>
+</div>
+</footer>
+</div>);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+// ⚡ INSTANT SPINNER HIDE — jaise hi React render ho, spinner gayab
+(function(){
+  var l=document.getElementById('loading-screen'), r=document.getElementById('root');
+  if(!l||!r) return;
+  var hideNow = function(){ if(r.innerHTML.trim()){ l.style.display='none'; try{obs.disconnect();}catch(e){} } };
+  var obs = new MutationObserver(hideNow);
+  obs.observe(r, {childList:true, subtree:true});
+  hideNow();
+  // Safety fallback: 8 sec baad force hide
+  setTimeout(function(){ l.style.display='none'; try{obs.disconnect();}catch(e){} }, 8000);
+})();
+</script>
+</body>
+</html>
